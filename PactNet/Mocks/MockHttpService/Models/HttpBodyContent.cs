@@ -23,8 +23,8 @@ namespace PactNet.Mocks.MockHttpService.Models
                     return null;
                 }
 
-                return _contentIsBase64Encoded ? 
-                    Convert.FromBase64String(Content) : 
+                return _contentIsBase64Encoded ?
+                    Convert.FromBase64String(Content) :
                     Encoding.GetBytes(Content);
             }
         }
@@ -108,7 +108,7 @@ namespace PactNet.Mocks.MockHttpService.Models
             }
             else
             {
-                var stringContent = Encoding.GetString(content);
+                var stringContent = Encoding.GetString(content).TrimStart('\uFEFF');
                 Content = stringContent;
                 Body = stringContent;
             }

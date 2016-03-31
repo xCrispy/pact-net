@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Xml;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using PactNet.Comparers;
 using PactNet.Matchers;
@@ -17,10 +20,27 @@ namespace PactNet.Mocks.MockHttpService.Comparers
                 return result;
             }
 
-            if (expected != null && actual == null)
+            if (actual == null)
             {
                 result.RecordFailure(new ErrorMessageComparisonFailure("Actual Body is null"));
                 return result;
+            }
+
+            // Do a simple check to see if body content might be XML; if so, attempt to parse so we know for sure.
+            if (IsXml(expected) && IsXml(actual))
+            {
+                try
+                {
+                    var expectedObj = ConvertXmlToJsonObj(expected);
+                    var actualObj = ConvertXmlToJsonObj(actual);
+
+                    expected = expectedObj;
+                    actual = actualObj;
+                }
+                catch
+                {
+                    // Parsing may fail, but that's fine - we'll move forward as if the objects weren't XML.
+                }
             }
 
             var expectedToken = JToken.FromObject(expected);
@@ -52,6 +72,19 @@ namespace PactNet.Mocks.MockHttpService.Comparers
             }
 
             return result;
+        }
+
+        private static bool IsXml(dynamic value)
+        {
+            var xmlStr = value as string;
+            return !string.IsNullOrEmpty(xmlStr) && xmlStr.TrimStart().StartsWith("<");
+        }
+
+        private static object ConvertXmlToJsonObj(string xml)
+        {
+            var doc = new XmlDocument();
+            doc.LoadXml(xml);
+            return JsonConvert.DeserializeObject(JsonConvert.SerializeXmlNode(doc));
         }
     }
 }
