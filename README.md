@@ -1,5 +1,6 @@
 # PactNet
-[![Build status](https://ci.appveyor.com/api/projects/status/5h4t9oerlhqcnwm8)](https://ci.appveyor.com/project/SEEKJobs/pact-net)  
+[![Build status](https://ci.appveyor.com/api/projects/status/lbjk2f66swsqa93c/branch/master?svg=true)](https://ci.appveyor.com/project/xCrispy/pact-net/branch/master)
+
 A .NET implementation of the Ruby consumer driven contract library, [Pact](https://github.com/realestate-com-au/pact).  
 Pact is based off the specification found at https://github.com/bethesque/pact_specification.  
 
